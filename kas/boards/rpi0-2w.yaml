@@ -1,0 +1,6 @@
+header:
+  version: 14
+  includes:
+    - ../common.yaml
+
+machine: raspberrypi0-2w
