@@ -4,9 +4,9 @@ header:
 repos:
   meta-openembedded:
     url: https://github.com/openembedded/meta-openembedded
-    branch: scarthgap
-    # TODO: pin to a specific commit — run scripts/pin-layers.sh
-    commit: HEAD
+    branch: whinlatter
+    # Pinned to the commit referenced in the NXP i.MX 6.18.2-1.0.0 manifest.
+    commit: a4e768dcfae181dd99e39c4286fa0729ca7f4e47
     path: layers/meta-openembedded
     layers:
       meta-oe:

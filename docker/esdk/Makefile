@@ -1,4 +1,4 @@
-IMAGE_NAME       ?= rpi5-esdk
+IMAGE_NAME       ?= imx93frdm-esdk
 IMAGE_TAG        ?= latest
 ESDK_INSTALL_DIR ?= /opt/poky/esdk
 

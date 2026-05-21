@@ -3,27 +3,24 @@ header:
   includes:
     - repos/poky.yaml
     - repos/meta-openembedded.yaml
-    - repos/meta-raspberrypi.yaml
+    - repos/meta-arm.yaml
+    - repos/meta-imx.yaml
     - repos/meta-swupdate.yaml
-    - repos/meta-acadia.yaml
+    - repos/meta-pinnacle.yaml
 
-distro: poky
-target: acadia-image
+distro: fsl-imx-headless
+target: pinnacle-image
 
 local_conf_header:
   base: |
     # Init manager
     INIT_MANAGER = "systemd"
 
-    # SD card image output
+    # SD card / eMMC image output
     IMAGE_FSTYPES = "wic.bz2 wic.bmap ext4"
 
-    # Raspberry Pi settings
-    ENABLE_UART = "1"
-    GPU_MEM     = "128"
-
-    # Accept proprietary firmware licence required by meta-raspberrypi
-    LICENSE_FLAGS_ACCEPTED:append = " synaptics-killswitch"
+    # Accept NXP End User License Agreement (required for proprietary firmware)
+    ACCEPT_FSL_EULA = "1"
 
     # Shared caches (bind-mounted by Docker)
     DL_DIR     ?= "${TOPDIR}/../downloads"
@@ -35,16 +32,12 @@ local_conf_header:
     # Required by Poky sanity checks (must match LOCALCONF_VERSION in poky)
     CONF_VERSION = "2"
 
-    # CM-13 OTA rollback/A-B redundancy
+    # A/B OTA rollback/A-B redundancy via U-Boot boot environment
     UBOOT_ENV_SUFFIX = "scr"
     UBOOT_ENV = "boot"
     MACHINE_FEATURES:append = " u-boot"
-    RPI_USE_U_BOOT = "1"
-    
-    # Enable bootcount in U-Boot
-    UBOOT_MACHINE = "rpi_arm64_defconfig"
     EXTRA_IMAGEDEPENDS += "u-boot"
     IMAGE_INSTALL:append = " u-boot-fw-utils"
 
-    # Swupdate specific variables
+    # SWUpdate init
     SWUPDATE_INIT = "systemd"

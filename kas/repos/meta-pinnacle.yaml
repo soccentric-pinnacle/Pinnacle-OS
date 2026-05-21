@@ -2,9 +2,9 @@ header:
   version: 14
 
 repos:
-  meta-acadia:
+  meta-pinnacle:
     url: git@github.com:SiliconCentric/meta-pinnacle.git
-    branch: scarthgap
+    branch: whinlatter
     # TODO: pin to a specific commit — run scripts/pin-layers.sh
     path: meta/meta-pinnacle
     layers:

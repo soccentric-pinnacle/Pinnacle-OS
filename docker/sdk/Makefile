@@ -1,4 +1,4 @@
-IMAGE_NAME      ?= rpi5-sdk
+IMAGE_NAME      ?= imx93frdm-sdk
 IMAGE_TAG       ?= latest
 SDK_INSTALL_DIR ?= /opt/poky/sdk
 

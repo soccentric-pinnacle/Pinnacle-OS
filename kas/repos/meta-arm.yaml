@@ -1,0 +1,12 @@
+header:
+  version: 14
+
+repos:
+  meta-arm:
+    url: https://git.yoctoproject.org/meta-arm
+    branch: whinlatter
+    # Pinned to the commit referenced in the NXP i.MX 6.18.2-1.0.0 manifest.
+    commit: 3752c4e4478a6dbdf7a722a261d16ebc7a4a99e5
+    path: layers/meta-arm
+    layers:
+      meta-arm:

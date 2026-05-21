@@ -1,27 +1,27 @@
 # =============================================================================
-# RPi Yocto Build System
+# NXP i.MX 93 Yocto Build System
 # =============================================================================
 
 # --- Image names -------------------------------------------------------------
-KAS_IMAGE        ?= rpi5-kas:latest
-SDK_IMAGE        ?= rpi5-sdk:latest
-ESDK_IMAGE       ?= rpi5-esdk:latest
+KAS_IMAGE        ?= imx93frdm-kas:latest
+SDK_IMAGE        ?= imx93frdm-sdk:latest
+ESDK_IMAGE       ?= imx93frdm-esdk:latest
 
 # Pin to a specific kas release — https://github.com/siemens/kas/releases
 KAS_VERSION      ?= 4.5
 
 # Yocto image recipe built by build / sdk / esdk / rebuild-image targets
-IMAGE_TARGET     ?= acadia-image
+IMAGE_TARGET     ?= pinnacle-image
 
 # OTA package version (overridable: make swu SWU_VERSION=1.2.3)
 SWU_VERSION      ?= $(shell date +%Y%m%d%H%M)
 
 # --- Positional board argument -----------------------------------------------
 # The board name is typed directly after the target — no BOARD= needed:
-#   make image rpi5
-#   make sdk   rpi4-64
-#   make esdk  rpi3-64
-#   make shell cm5
+#   make image  frdm-imx93
+#   make sdk    frdm-imx93
+#   make esdk   frdm-imx93
+#   make shell  frdm-imx93
 # This block MUST appear before the BOARD default and KAS_CONFIG / MACHINE
 # definitions so those variables are derived from the correct board name.
 _BOARD_TARGETS := image build rebuild-image sdk esdk sdk-image esdk-image shell swu flash
@@ -40,10 +40,8 @@ endif
 
 # --- Board -------------------------------------------------------------------
 # Select target board — must match a file in kas/boards/<BOARD>.yaml
-# Boards: rpi5  rpi4-64  rpi4  rpi3-64  rpi3  rpi2
-#         rpi0-2w-64  rpi0-2w  rpi0-wifi  rpi0  rpi1
-#         rpi-armv7  rpi-armv8  cm1  cm3  cm5
-BOARD            ?= rpi5
+# Boards: frdm-imx93
+BOARD            ?= frdm-imx93
 KAS_CONFIG       := kas/boards/$(BOARD).yaml
 
 # Derive MACHINE automatically from the kas yaml
@@ -132,7 +130,7 @@ ensure-image:
 	         $(MAKE) kas-image; }
 
 ## Build the Yocto SD card image for BOARD — alias for build
-## Usage: make image rpi5
+## Usage: make image frdm-imx93
 image: build
 
 ## Full chain: Yocto SDK build → stage installer → docker build → deploy
@@ -263,8 +261,8 @@ esdk: ensure-image kas-container-script
 ## Usage: make swu   or   make swu SWU_VERSION=1.2.3
 swu: build
 	$(eval ROOTFS := $(shell find $(BUILD_DIR)/tmp/deploy/images/$(MACHINE) \
-	    -name "acadia-image-$(MACHINE)*.rootfs.ext4" \
-	    -o -name "core-image-full-cmdline-$(MACHINE)*.rootfs.ext4" 2>/dev/null \
+	    -name "pinnacle-image-$(MACHINE)*.rootfs.ext4" \
+	    -o -name "imx-image-core-$(MACHINE)*.rootfs.ext4" 2>/dev/null \
 	    | sort -V | tail -1))
 	@test -n "$(ROOTFS)" || \
 	    { echo "ERROR: No .rootfs.ext4 found. Ensure 'ext4' is in IMAGE_FSTYPES."; exit 1; }
@@ -276,45 +274,45 @@ swu: build
 
 	# --- kernel + DTB (required for I3: kernel/DTB included in OTA) ---
 	$(eval KERNEL := $(shell find $(BUILD_DIR)/tmp/deploy/images/$(MACHINE) \
-	    -name "kernel_2712.img" 2>/dev/null | sort -V | tail -1))
+	    -name "Image" 2>/dev/null | sort -V | tail -1))
 	$(eval DTB := $(shell find $(BUILD_DIR)/tmp/deploy/images/$(MACHINE) \
-	    -name "bcm2712-rpi-5-b.dtb" 2>/dev/null | sort -V | tail -1))
+	    -name "$(MACHINE).dtb" 2>/dev/null | sort -V | tail -1))
 	@test -n "$(KERNEL)" || \
-	    { echo "WARNING: kernel_2712.img not found — kernel will not be updated in this .swu"; }
+	    { echo "WARNING: Image not found — kernel will not be updated in this .swu"; }
 	@test -n "$(DTB)" || \
-	    { echo "WARNING: bcm2712-rpi-5-b.dtb not found — DTB will not be updated in this .swu"; }
-	@[ -n "$(KERNEL)" ] && cp "$(KERNEL)" "$(BUILD_DIR)/swu/kernel_2712.img" || true
-	@[ -n "$(DTB)" ]    && cp "$(DTB)"    "$(BUILD_DIR)/swu/bcm2712-rpi-5-b.dtb" || true
+	    { echo "WARNING: $(MACHINE).dtb not found — DTB will not be updated in this .swu"; }
+	@[ -n "$(KERNEL)" ] && cp "$(KERNEL)" "$(BUILD_DIR)/swu/Image" || true
+	@[ -n "$(DTB)" ]    && cp "$(DTB)"    "$(BUILD_DIR)/swu/$(MACHINE).dtb" || true
 
 	# --- sw-description ---
 	@sed "s|@@VERSION@@|$(SWU_VERSION)|" \
-	    meta/meta-acadia/swupdate/sw-description \
+	    meta/meta-pinnacle/swupdate/sw-description \
 	    > "$(BUILD_DIR)/swu/sw-description"
-	@cp meta/meta-acadia/swupdate/pre-install.sh  "$(BUILD_DIR)/swu/"
-	@cp meta/meta-acadia/swupdate/post-install.sh "$(BUILD_DIR)/swu/"
+	@cp meta/meta-pinnacle/swupdate/pre-install.sh  "$(BUILD_DIR)/swu/"
+	@cp meta/meta-pinnacle/swupdate/post-install.sh "$(BUILD_DIR)/swu/"
 
 	# --- optional RSA signing (C2) ---
-	@if [ -f "$(BUILD_DIR)/swu/../../meta/meta-acadia/swupdate/keys/swupdate-private.pem" ]; then \
+	@if [ -f "$(BUILD_DIR)/swu/../../meta/meta-pinnacle/swupdate/keys/swupdate-private.pem" ]; then \
 	    echo "Signing sw-description with RSA-4096 ..."; \
 	    openssl dgst -sha256 \
-	        -sign "meta/meta-acadia/swupdate/keys/swupdate-private.pem" \
+	        -sign "meta/meta-pinnacle/swupdate/keys/swupdate-private.pem" \
 	        -out  "$(BUILD_DIR)/swu/sw-description.sig" \
 	        "$(BUILD_DIR)/swu/sw-description"; \
 	    echo "Packing SIGNED .swu ..."; \
 	    cd "$(BUILD_DIR)/swu" && \
-	        printf 'sw-description\nsw-description.sig\npre-install.sh\npost-install.sh\nrootfs.ext4.gz\nkernel_2712.img\nbcm2712-rpi-5-b.dtb\n' | \
+	        printf 'sw-description\nsw-description.sig\npre-install.sh\npost-install.sh\nrootfs.ext4.gz\nImage\n$(MACHINE).dtb\n' | \
 	        cpio -ov -H newc > "$(BUILD_DIR)/$(BOARD)-$(SWU_VERSION).swu"; \
 	else \
 	    echo "WARNING: No private key found — packing UNSIGNED .swu (run scripts/generate-swu-keys.sh to enable signing)"; \
 	    cd "$(BUILD_DIR)/swu" && \
-	        printf 'sw-description\npre-install.sh\npost-install.sh\nrootfs.ext4.gz\nkernel_2712.img\nbcm2712-rpi-5-b.dtb\n' | \
+	        printf 'sw-description\npre-install.sh\npost-install.sh\nrootfs.ext4.gz\nImage\n$(MACHINE).dtb\n' | \
 	        cpio -ov -H newc > "$(BUILD_DIR)/$(BOARD)-$(SWU_VERSION).swu"; \
 	fi
 	@echo "OTA package: $(BUILD_DIR)/$(BOARD)-$(SWU_VERSION).swu"
 	@$(MAKE) --no-print-directory deploy-swu DEPLOY_TS=$(DEPLOY_TS)
 
 
-## Flash to SD card.  Usage: make flash rpi5 DEVICE=/dev/sdX
+## Flash to SD card / eMMC.  Usage: make flash frdm-imx93 DEVICE=/dev/sdX
 flash:
 ifndef DEVICE
 	$(error DEVICE is not set — example: make flash DEVICE=/dev/sdb)
@@ -402,7 +400,7 @@ clean-all: clean-build
 ## Install bash tab-completion (appends a source line to ~/.bashrc)
 completion:
 	@RCFILE="$$HOME/.bashrc"; \
-	 LINE="source \"$(CURDIR)/rpi-make-completion.bash\""; \
+	 LINE="source \"$(CURDIR)/pinnacle-make-completion.bash\""; \
 	 if grep -qF "$$LINE" "$$RCFILE" 2>/dev/null; then \
 	     echo "Completion already enabled in $$RCFILE"; \
 	 else \
@@ -416,10 +414,10 @@ completion:
 help:
 	@printf "\nUsage: make <target> <board>\n"
 	@printf "\n  Examples:\n"
-	@printf "    make image  rpi5\n"
-	@printf "    make sdk    rpi4-64\n"
-	@printf "    make esdk   rpi3-64\n"
-	@printf "    make flash  rpi5 DEVICE=/dev/sdb\n"
+	@printf "    make image  frdm-imx93\n"
+	@printf "    make sdk    frdm-imx93\n"
+	@printf "    make esdk   frdm-imx93\n"
+	@printf "    make flash  frdm-imx93 DEVICE=/dev/sdb\n"
 	@printf "\nYocto build:\n"
 	@printf "  %-24s %s\n" "image"              "Build Yocto SD card image for BOARD  (alias for build)"
 	@printf "  %-24s %s\n" "build"              "Build Yocto SD card image for BOARD"
@@ -428,7 +426,7 @@ help:
 	@printf "  %-24s %s\n" "esdk"               "Build extensible SDK     → deploy/esdk/"
 	@printf "  %-24s %s\n" "shell"              "Interactive kas shell in the build container"
 	@printf "  %-24s %s\n" "swu"                "Build .swu OTA package  [SWU_VERSION=YYYYMMDDHHMM]"
-	@printf "  %-24s %s\n" "flash"              "Flash SD card  (requires DEVICE=/dev/sdX)"
+	@printf "  %-24s %s\n" "flash"              "Flash SD card / eMMC  (requires DEVICE=/dev/sdX)"
 	@printf "\nDocker images:\n"
 	@printf "  %-24s %s\n" "kas-image"          "Build/rebuild KAS build container  (docker/yocto/)"
 	@printf "  %-24s %s\n" "ensure-image"       "Build KAS image only when absent"
@@ -448,7 +446,5 @@ help:
 	@printf "\nUtilities:\n"
 	@printf "  %-24s %s\n" "completion"         "Install bash tab-completion into ~/.bashrc"
 	@printf "\nBoards:\n"
-	@printf "  rpi5  rpi4-64  rpi4  rpi3-64  rpi3  rpi2\n"
-	@printf "  rpi0-2w-64  rpi0-2w  rpi0-wifi  rpi0  rpi1\n"
-	@printf "  rpi-armv7  rpi-armv8  cm1  cm3  cm5\n"
+	@printf "  frdm-imx93\n"
 	@printf "\n"

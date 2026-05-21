@@ -1,4 +1,4 @@
-IMAGE_NAME  ?= rpi5-kas
+IMAGE_NAME  ?= imx93frdm-kas
 IMAGE_TAG   ?= latest
 KAS_VERSION ?= 4.5
 
