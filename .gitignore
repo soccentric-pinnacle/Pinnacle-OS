@@ -1,0 +1,7 @@
+build/
+downloads/
+layers/
+meta/
+.vscode/
+sstate-cache/
+deploy/
