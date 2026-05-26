@@ -48,6 +48,14 @@ local_conf_header:
     # SWUpdate init
     SWUPDATE_INIT = "systemd"
 
+    # Define BB_GIT_DEFAULT_DESTSUFFIX which meta-imx recipes rely on.
+    # In walnascar (poky 5.2) this variable is no longer defined in bitbake,
+    # so recipes using destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/... would
+    # expand to an absolute path (/foo) and os.path.join would treat it as
+    # system root. Setting it to "git" matches the bitbake git fetcher default
+    # (def_destsuffix = "git/") and restores the expected layout.
+    BB_GIT_DEFAULT_DESTSUFFIX = "git"
+
     # Mask NXP's git-submodule-based qemu recipes (broken gitlab URLs / alternates
     # double-slash bug). Use poky's tarball-based qemu-native 9.2.0 instead.
     BBMASK += "meta-imx/meta-imx-bsp/recipes-devtools/qemu/qemu-native_9.0.2.imx.bb meta-imx/meta-imx-bsp/recipes-devtools/qemu/qemu-system-native_9.0.2.imx.bb meta-imx/meta-imx-bsp/recipes-devtools/qemu/qemu_9.0.2.imx.bb"
