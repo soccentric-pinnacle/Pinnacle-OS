@@ -4,12 +4,13 @@ header:
 repos:
   meta-openembedded:
     url: https://github.com/openembedded/meta-openembedded
-    branch: whinlatter
-    # Pinned to the commit referenced in the NXP i.MX 6.18.2-1.0.0 manifest.
-    commit: a4e768dcfae181dd99e39c4286fa0729ca7f4e47
+    branch: walnascar
+    # Pinned to HEAD of walnascar (aligned with meta-imx rel_imx_6.18.2_1.0.0)
+    commit: 07330a98cf93806b7a4e0170a541b94962ff3960
     path: layers/meta-openembedded
     layers:
       meta-oe:
       meta-python:
       meta-networking:
       meta-multimedia:
+      meta-perl:

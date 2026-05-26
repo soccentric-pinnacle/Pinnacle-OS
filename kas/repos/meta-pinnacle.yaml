@@ -4,7 +4,7 @@ header:
 repos:
   meta-pinnacle:
     url: git@github.com:SiliconCentric/meta-pinnacle.git
-    branch: whinlatter
+    branch: master
     # TODO: pin to a specific commit — run scripts/pin-layers.sh
     path: meta/meta-pinnacle
     layers:

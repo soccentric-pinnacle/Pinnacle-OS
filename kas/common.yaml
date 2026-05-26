@@ -4,6 +4,8 @@ header:
     - repos/poky.yaml
     - repos/meta-openembedded.yaml
     - repos/meta-arm.yaml
+    - repos/meta-freescale.yaml
+    - repos/meta-freescale-distro.yaml
     - repos/meta-imx.yaml
     - repos/meta-swupdate.yaml
     - repos/meta-pinnacle.yaml
@@ -32,6 +34,10 @@ local_conf_header:
     # Required by Poky sanity checks (must match LOCALCONF_VERSION in poky)
     CONF_VERSION = "2"
 
+    # Treat dangling .bbappend files (version mismatches between meta-imx and
+    # the poky walnascar versions) as warnings, not fatal errors.
+    BB_DANGLINGAPPENDS_ABORTPOLICY = "warn"
+
     # A/B OTA rollback/A-B redundancy via U-Boot boot environment
     UBOOT_ENV_SUFFIX = "scr"
     UBOOT_ENV = "boot"
@@ -41,3 +47,7 @@ local_conf_header:
 
     # SWUpdate init
     SWUPDATE_INIT = "systemd"
+
+    # Mask NXP's git-submodule-based qemu recipes (broken gitlab URLs / alternates
+    # double-slash bug). Use poky's tarball-based qemu-native 9.2.0 instead.
+    BBMASK += "meta-imx/meta-imx-bsp/recipes-devtools/qemu/qemu-native_9.0.2.imx.bb meta-imx/meta-imx-bsp/recipes-devtools/qemu/qemu-system-native_9.0.2.imx.bb meta-imx/meta-imx-bsp/recipes-devtools/qemu/qemu_9.0.2.imx.bb"
