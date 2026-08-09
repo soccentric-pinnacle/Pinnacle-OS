@@ -169,3 +169,39 @@ boot-flow terminology) updated to i.MX 93 / Pinnacle equivalents.
 | `pinctrl-bcm2835` GPIO | `imx93-pinctrl` GPIO |
 | — | EdgeLock Secure Enclave (ele-imx) |
 | — | OP-TEE (BL32) |
+
+---
+
+## [Unreleased] — Feature-complete OS layer
+
+### Added
+- **Complete Yocto layer** committed locally in `meta/meta-pinnacle`:
+  - `recipes-core/images/pinnacle-image.bb` + `pinnacle-image-common.inc` +
+    20 per-domain image variants
+  - `recipes-core/pinnacle-data-init` — first-boot persistent `/home` init
+  - `recipes-core/pinnacle-services` — dmesg capture + disk-usage monitoring
+  - `recipes-core/systemd` — persistent journal + NTP timesyncd config
+  - `recipes-core/os-release` — identifies image as "Pinnacle OS"
+  - `recipes-core/packagegroup-pinnacle-middleware` / `-cloud`
+  - `recipes-connectivity/pinnacle-connectivity` — Ethernet/WiFi/Bluetooth
+  - `recipes-connectivity/pinnacle-timesync`
+  - `recipes-bsp/pinnacle-hal` — HAL recipe (CMake + gRPC)
+  - `recipes-support/expand-rootfs` — grow root to fill SD card
+  - `recipes-support/swupdate` — RSA signing config fragment
+  - `recipes-swupdate/pinnacle-swupdate-config` — A/B OTA runtime
+  - `wic/sdimage-imx93.wks` — A/B OTA partition layout
+  - `swupdate/sw-description` + `pre-install.sh` + `post-install.sh`
+- **`scripts/generate-swu-keys.sh`** — RSA-4096 keypair generator
+- **`CLAUDE.md`** and **`REPO_MAP.md`** — project documentation
+
+### Fixed
+- `.gitignore` now tracks `meta/meta-pinnacle/` locally while ignoring upstream
+  `layers/`.
+
+### Notes
+- Pinnacle-OS is a direct port of the Acadia/Zion reference template,
+  retargeted for NXP i.MX 8M/9 (`fsl-imx-headless` distro, machine
+  `imx93-11x11-lpddr4x-frdm`). Boot chain, A/B OTA, and service layout
+  preserved; kernel image (`Image`), DTB (`imx93-11x11-lpddr4x-frdm.dtb`), and
+  U-Boot env flow adapted. Pinnacle-HAL's A-core/M-core (RPMsg/OpenAMP) split
+  is preserved.
