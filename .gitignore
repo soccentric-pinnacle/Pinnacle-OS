@@ -49,3 +49,9 @@ deploy/
 meta/*
 !meta/meta-pinnacle/
 !meta/meta-pinnacle/**
+
+# Host SSH keys used to fetch the private HAL repo during eSDK Docker build
+# (never commit real keys)
+docker/esdk/ssh/
+
+sstate/

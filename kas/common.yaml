@@ -10,7 +10,7 @@ header:
     - repos/meta-swupdate.yaml
     - repos/meta-pinnacle.yaml
 
-distro: fsl-imx-headless
+distro: fsl-imx-fb
 target: pinnacle-image
 
 local_conf_header:
