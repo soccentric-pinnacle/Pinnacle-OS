@@ -61,7 +61,7 @@ Partition table (`meta/meta-pinnacle/wic/sdimage-imx93.wks`):
 | `meta-freescale-distro` | meta-freescale-distro          | NXP distro policy (`fsl-imx-headless`)|
 | `meta-imx`          | meta-imx                           | i.MX BSP, kernel, U-Boot, firmware   |
 | `meta-swupdate`     | sbabic/meta-swupdate               | swupdate OTA framework               |
-| `meta-pinnacle`     | SiliconCentric/meta-pinnacle (local, in `meta/`) | Pinnacle image, HAL, swu config |
+| `meta-pinnacle`     | soccentric-pinnacle/meta-pinnacle (local, in `meta/`) | Pinnacle image, HAL, swu config |
 
 ## Repo Notes
 

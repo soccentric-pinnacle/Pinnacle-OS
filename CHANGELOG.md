@@ -123,7 +123,7 @@ performed when porting from Raspberry Pi (Acadia) to NXP i.MX 93 (Pinnacle).
 
 | Old | New |
 |---|---|
-| `git@github.com:SiliconCentric/Acaida-HAL.git` | `git@github.com:SiliconCentric/Pinnacle-HAL.git` |
+| `git@github.com:SiliconCentric/Acaida-HAL.git` | `git@github.com:soccentric-pinnacle/Pinnacle-HAL.git` |
 
 ### `patch_health.py`
 

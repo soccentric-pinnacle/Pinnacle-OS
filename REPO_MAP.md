@@ -1,6 +1,6 @@
 # Pinnacle-OS
 
-**Remote:** `git@github.com:SiliconCentric/Pinnacle-OS.git`
+**Remote:** `git@github.com:soccentric-pinnacle/Pinnacle-OS.git`
 **Parent project:** [Pinnacle](../Pinnacle.md) (target hardware: **NXP i.MX 8M/9** Linux app core + on/off-chip Cortex-M real-time co-processor via RPMsg/OpenAMP.)
 **Leaf type:** `<Project>-OS`
 **Status:** REAL — actively built out
