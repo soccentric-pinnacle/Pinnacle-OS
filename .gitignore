@@ -45,10 +45,9 @@ Thumbs.db
 
 deploy/
 
-# Local meta layer: commit meta/meta-pinnacle in-tree, ignore others.
+# meta/meta-pinnacle is a nested clone with its own upstream
+# (soccentric-pinnacle/meta-pinnacle.git), fetched by kas — never tracked here.
 meta/*
-!meta/meta-pinnacle/
-!meta/meta-pinnacle/**
 
 # Host SSH keys used to fetch the private HAL repo during eSDK Docker build
 # (never commit real keys)
