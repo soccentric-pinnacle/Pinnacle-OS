@@ -10,7 +10,8 @@ Yocto-based embedded Linux OS for the **NXP i.MX 8M/9** platform. Built with
 OTA updates via `swupdate`.
 
 **Board:** default `frdm-imx93` (machine `imx93-11x11-lpddr4x-frdm`). Platform
-customization lives in `meta/meta-pinnacle` (committed locally); upstream
+customization lives in `meta/meta-pinnacle`, a nested clone of its own upstream
+`soccentric-pinnacle/meta-pinnacle` (fetched by kas); upstream
 layers (`poky`, `meta-openembedded`, `meta-arm`, `meta-freescale`,
 `meta-freescale-distro`, `meta-imx`, `meta-swupdate`) are checked out by kas
 into a **gitignored** `layers/` directory and must never be hand-edited.
@@ -27,8 +28,8 @@ SD/eMMC → Boot ROM → imx-boot (ATF + U-Boot) → U-Boot → Linux
 **A/B OTA layout:** `boot` (FAT32), `rootfs-a`, `rootfs-b` (ext4, switched by
 swupdate), `data` (`/home`, persistent).
 
-**Local layer:** `meta/meta-pinnacle` is committed in-repo (see `.gitignore`),
-matching the Acadia/Arches/Zion/Joshua convention.
+**Local layer:** `meta/meta-pinnacle` is a nested clone with its own upstream
+at `soccentric-pinnacle/meta-pinnacle.git` (see `.gitignore`).
 
 **Architectural note:** Pinnacle-HAL is split into an A-core (Linux-facing
 probes) and an M-core (deterministic real-time/safety) domain bridged by an
