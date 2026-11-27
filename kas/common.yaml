@@ -9,7 +9,6 @@ header:
     - repos/meta-imx.yaml
     - repos/meta-swupdate.yaml
     - repos/meta-pinnacle.yaml
-    - repos/pinnacle-configuration.yaml
     - repos/pinnacle-instrumentation.yaml
 
 distro: fsl-imx-fb
